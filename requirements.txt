@@ -4,3 +4,4 @@ torchaudio
 matplotlib
 numpy
 opencv-python
+av
