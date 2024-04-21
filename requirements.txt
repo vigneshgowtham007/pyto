@@ -3,4 +3,4 @@ torchvision
 torchaudio
 matplotlib
 numpy
-opencv
+opencv-python
