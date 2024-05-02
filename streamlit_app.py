@@ -9,7 +9,9 @@ from io import BytesIO
 # Function to load the model
 def load_model():
     model = models.resnet50(pretrained=True)
-    model.fc = torch.nn.Linear(2048, 4)  # Assuming 4 classes for four-legged animals
+    # Redefine the fully connected layer to match output size
+    num_ftrs = model.fc.in_features
+    model.fc = torch.nn.Linear(num_ftrs, 4)  # Assuming 4 classes for four-legged animals
     return model
 
 # Function to preprocess the image
@@ -31,23 +33,6 @@ def predict_image(image, model):
         output = model(input_batch)
     _, predicted_idx = torch.max(output, 1)
     return predicted_idx.item()
-
-# Download pre-trained ResNet50 model weights
-@st.cache(allow_output_mutation=True)
-def download_resnet50_weights():
-    model = models.resnet50(pretrained=True)
-    torch.save(model.state_dict(), "pretrained_resnet50_weights.pth")
-    return "pretrained_resnet50_weights.pth"
-
-# Load the model
-@st.cache(allow_output_mutation=True)
-def load_model():
-    weights_file = download_resnet50_weights()
-    model = models.resnet50()
-    model.fc = torch.nn.Linear(2048, 4)
-    model.load_state_dict(torch.load(weights_file))
-    model.eval()
-    return model
 
 st.title("Four-Legged Animal Predictor")
 
